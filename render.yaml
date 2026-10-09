@@ -1,0 +1,27 @@
+# Render Blueprint — demo only. Do not commit or paste actual secret values.
+services:
+  - type: web
+    name: affinity-atlas-qloo
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: python3 -m unittest discover -v
+    startCommand: python3 app.py
+    healthCheckPath: /health
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: ATLAS_PUBLIC_DEMO
+        value: "1"
+      - key: ATLAS_MAX_HOURLY
+        value: "20"
+      - key: ATLAS_MAX_DAILY
+        value: "60"
+      - key: QLOO_API_KEY
+        sync: false
+      - key: ATLAS_LLM_URL
+        value: https://openrouter.ai/api/v1/chat/completions
+      - key: ATLAS_LLM_MODEL
+        sync: false
+      - key: ATLAS_LLM_API_KEY
+        sync: false
