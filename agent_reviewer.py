@@ -112,6 +112,30 @@ def review_formats(anchor: dict, branches: dict, city: str, objective: str) -> t
                "messages": [{"role": "system", "content": system},
                             {"role": "user", "content": json.dumps(user_data, ensure_ascii=False)}],
                "temperature": 0, "max_tokens": 160}
+    # Require structured JSON for the configured OpenRouter endpoint.
+    # Local validation and deterministic fallback remain unchanged.
+    if urllib.parse.urlsplit(endpoint).hostname == "openrouter.ai":
+        payload["max_tokens"] = 512
+        payload["response_format"] = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "affinity_atlas_format_selection",
+                "strict": True,
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "formats": {
+                            "type": "array",
+                            "items": {"type": "string", "enum": elig},
+                            "description": "Select exactly three distinct format IDs in priority order"
+                        }
+                    },
+                    "required": ["formats"],
+                    "additionalProperties": False
+                }
+            }
+        }
+        payload["provider"] = {"require_parameters": True}
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     token = os.environ.get("ATLAS_LLM_API_KEY", "").strip()
     if token:
