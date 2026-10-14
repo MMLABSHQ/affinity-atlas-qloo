@@ -1,6 +1,16 @@
-# Affinity Atlas 0.5 — Public Deployment Staging (bounded LLM)
+# Affinity Atlas v0.5 — Live Qloo-powered Cultural Programming Agent
 
-**Status: deployment staging; no live public service has been created.** Uses Qloo live data locally but is **not yet a public hackathon submission**. Its optional LLM reviewer is disabled until explicitly configured, and is not a fully autonomous agent. Developed as the Persona B workstream; does not use or alter Persona A's Apertus repository.
+**Status: live public demo, October 14, 2026.**
+
+Live application: https://affinity-atlas-qloo.onrender.com
+
+Affinity Atlas uses live Qloo cultural intelligence to generate evidence-grounded programming concepts. Its bounded LLM reviewer can select among predefined formats, while deterministic code validates evidence, applies venue safeguards and constructs the final proposals.
+
+The public Render deployment has been tested successfully with Qloo and an active external LLM reviewer. The offline test suite contains 34 passing tests at this release checkpoint.
+
+This is a bounded agentic prototype, not an unrestricted autonomous agent. It is not yet a submitted Devpost entry.
+
+Developed independently of the Apertus repository.
 
 ## Run locally (Ubuntu/macOS, Python 3.10+)
 
@@ -21,7 +31,7 @@ If a previous version is running on port 8765, stop it with **Ctrl+C** before st
 
 The `feature.explainability` input signal `score` is **not a percentage indicating that an artist and venue are compatible**, and event formats are **our editorial hypotheses**, not Qloo recommendations. Each venue remains unconfirmed.
 
-## What changed in 0.4
+## Capabilities introduced in 0.4 and retained in v0.5
 
 - **Optional bounded AI reviewer** chooses which **three of five predefined programme formats** to use, based on the brief and names of verified Qloo results.
 - **Strict critic/verification gate:** accepts only three distinct IDs from the allowed list, rejects unsupported formats, does not trust model-generated facts, and **allocates all entities from Qloo in deterministic code**. If review fails or the model is unavailable, the application automatically uses the proven 0.3 editorial policy and clearly identifies it in the UI.
@@ -29,15 +39,17 @@ The `feature.explainability` input signal `score` is **not a percentage indicati
 - New **Agent review** panel shows which reasoning mode actually ran, avoiding false claims of AI operation.
 - Diversity, citation/signal caution and the independently verified 0.3 fallback are unchanged.
 
-### Enable an external AI model later (optional)
+### External AI model configuration
 
-By default this v0.4 needs **no extra key, no pip installation and no subscription**. It uses the reliable rule-based mode. To activate a compatible chat-completions model, configure these **server-side** environment variables **without storing credentials in the source or shell history**:
+Local execution can use the deterministic rule-based mode without an external LLM. The public Render demo currently configures an external OpenRouter reviewer.
+
+To configure a compatible chat-completions model, use these **server-side** environment variables without storing credentials in source files or shell history:
 
 - `ATLAS_LLM_URL`: complete HTTPS endpoint (for example, `https://api.openai.com/v1/chat/completions`); or a localhost HTTP endpoint you control.
 - `ATLAS_LLM_MODEL`: model name supported by that endpoint.
 - `ATLAS_LLM_API_KEY`: provider key where required (server only; not sent to frontend).
 
-The optional model receives **one bounded request per live research execution**, after the existing Qloo lookup. Failure is fail-closed to verified deterministic editorial rules. An incompatible model may fall back safely. The API call is optional and may incur provider costs. This is **not** a full autonomous research agent or a production security model. Live provider integration must be tested explicitly before describing it as functioning.
+The optional model receives **one bounded request per live research execution**, after the existing Qloo lookup. Failure is fail-closed to verified deterministic editorial rules. An incompatible model may fall back safely. The API call is optional and may incur provider costs. This is **not** a full autonomous research agent or a production security model. Live provider integration was successfully demonstrated on October 14, 2026. Individual model requests may still fail, in which case deterministic fallback remains active.
 
 ## Features inherited from 0.2
 
@@ -51,7 +63,7 @@ The optional model receives **one bounded request per live research execution**,
 
 ## Demo walkthrough
 
-Keep artist `Nils Frahm`, city `Madrid` and click each preset in turn. The top proposal should differ:
+Keep artist `Nils Frahm`, city `Madrid` and compare different programming objectives. Typical leading formats include:
 
 - **Film programme** → *Cinema in Resonance*.
 - **Sound installation** → *Architecture of Listening*.
@@ -67,11 +79,11 @@ python3 -m unittest discover -v
 
 No third-party Python dependencies. `test_agent_reviewer.py`, `test_engine.py`, `test_decision_engine.py`, and `test_http.py` cover the workflow and safeguards without contacting Qloo.
 
-## Security and publication readiness
+## Public demo security and limitations
 
-The HTTP server is for **local use** (`127.0.0.1` default). Public-demo mode now provides opt-in deployment gating, server-held credentials and process-local rolling quotas; **this is staging, not production security**. See `DEPLOY_GUIDE_ES.md` and `RELEASE_NOTES_v0_5.md`. Usage limits reset on restarts and do not guarantee spend caps; impose provider-side quotas and monitoring. No unaudited general public launch. It also needs a free live demo, a public open-source repository, an accessible English submission, and reliability tests through judging.
+The server defaults to local binding (`127.0.0.1`). The hosted demo uses public-demo mode with server-held credentials, deployment gating and process-local rolling quotas. These safeguards do not constitute a complete production security system. See `DEPLOY_GUIDE_ES.md` and `RELEASE_NOTES_v0_5.md`. Usage limits reset on restarts and do not guarantee spend caps; impose provider-side quotas and monitoring. No unaudited general public launch. It also needs a free live demo, a public open-source repository, an accessible English submission, and reliability tests through judging.
 
-The repository includes an MIT `LICENSE` as a proposed open-source license; the team should confirm ownership/attribution before publishing.
+The repository includes an MIT `LICENSE`. The team must confirm ownership, attribution and third-party rights before the final hackathon submission.
 
 ## Qloo Hackathon
 
@@ -94,6 +106,6 @@ The repository includes an MIT `LICENSE` as a proposed open-source license; the 
 - `PERSONA_B_CHECKPOINT.md`: goal, sources, DONE criteria and next gate.
 
 
-## v0.5 staging / Render Blueprint
+## v0.5 live demo / Render Blueprint
 
-See `DEPLOY_GUIDE_ES.md` (Spanish) and `RELEASE_NOTES_v0_5.md`. `render.yaml` sets `HOST=0.0.0.0`, `ATLAS_PUBLIC_DEMO=1` and requires fresh server-held Qloo and remote LLM keys. The browser never needs or receives the Qloo key in public mode. **Do not deploy with the old exposed key.** The remote LLM provider/model must be tested independently; your local Ollama process is not accessible from Render.
+See `DEPLOY_GUIDE_ES.md` (Spanish) and `RELEASE_NOTES_v0_5.md`. The public demo is deployed on Render using `render.yaml`, with `HOST=0.0.0.0`, `ATLAS_PUBLIC_DEMO=1` and server-held Qloo and remote LLM credentials. The browser never needs or receives the Qloo key in public mode. **Do not deploy with the old exposed key.** The remote LLM provider/model must be tested independently; your local Ollama process is not accessible from Render.
