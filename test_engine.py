@@ -42,7 +42,11 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(len(result["branches"]["place"]), 3)
         self.assertTrue(all(len(c["evidence"]) >= 3 for c in result["concepts"]))
         self.assertFalse(any("El Rastro" in c["description"] for c in result["concepts"]))
-        self.assertEqual(len(result["trace"]), 7)
+        expected_trace_length = 8 if any(
+            step["phase"] == "Agent review"
+            for step in result["trace"]
+        ) else 7
+        self.assertEqual(len(result["trace"]), expected_trace_length)
 
 
 if __name__ == "__main__":
